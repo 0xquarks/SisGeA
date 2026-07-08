@@ -1,1 +1,12 @@
-/bin
+# Carpetas de Gradle e IntelliJ (Se ignoran)
+.gradle/
+build/
+.idea/
+*.iml
+out/
+
+# De Eclipse IGNORAMOS la carpeta bin, pero PERMITIMOS estos tres:
+bin/
+# .project      <- NO los agregues aquí, déjalos libres para que viajen a GitHub
+# .classpath
+# .settings/
