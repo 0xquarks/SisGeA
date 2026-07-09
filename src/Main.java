@@ -9,7 +9,7 @@ public class Main {
         GestorEstudiantes gestor = new GestorEstudiantes();
         Scanner scanner = new Scanner(System.in);
         
-        String rutaArchivo = "src/main/resources/estudiantes.txt";
+        String rutaArchivo = "src/estudiantes.txt";
         System.out.println("🔄 Iniciando sistema y cargando datos...");
         Loaders.cargarEstudiantes(rutaArchivo, gestor);
         System.out.println("------------------------------------------------");
