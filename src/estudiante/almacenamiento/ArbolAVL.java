@@ -1,6 +1,7 @@
 package estudiante.almacenamiento;
 
 import estudiante.Estudiante;
+import estudiante.gestion.Nodo;
 
 public class ArbolAVL {
     private NodoAVL raiz;
@@ -43,17 +44,17 @@ public class ArbolAVL {
         nodo.setAltura(1 + Math.max(altura(nodo.getIzq()), altura(nodo.getDer())));
         int balance = obtenerBalance(nodo);
 
-        if (balance > 1 && codigo < nodo.getIzq().getDato().getCodigo()) {
+        if (balance > 1 && codigo < nodo.getIzq().getCodigo()) {
             return rotarDerecha(nodo);
         }
-        if (balance < -1 && codigo > nodo.getDer().getDato().getCodigo()) {
+        if (balance < -1 && codigo > nodo.getDer().getCodigo()) {
             return rotarIzquierda(nodo);
         }
-        if (balance > 1 && codigo > nodo.getIzq().getDato().getCodigo()) {
+        if (balance > 1 && codigo > nodo.getIzq().getCodigo()) {
             nodo.setIzq(rotarIzquierda(nodo.getIzq()));
             return rotarDerecha(nodo);
         }
-        if (balance < -1 && codigo < nodo.getDer().getDato().getCodigo()) {
+        if (balance < -1 && codigo < nodo.getDer().getCodigo()) {
             nodo.setDer(rotarDerecha(nodo.getDer()));
             return rotarIzquierda(nodo);
         }
@@ -61,22 +62,22 @@ public class ArbolAVL {
         return nodo;
     }
 
-    public void insertar(Estudiante e) {
-        raiz = insertarRec(raiz, e);
+    public void insertar(int codigo, Nodo nodoLista) {
+        raiz = insertarRec(raiz, codigo, nodoLista);
     }
 
-    private NodoAVL insertarRec(NodoAVL nodo, Estudiante e) {
-        if (nodo == null) return new NodoAVL(e);
+    private NodoAVL insertarRec(NodoAVL nodo, int codigo, Nodo nodoLista) {
+        if (nodo == null) return new NodoAVL(codigo, nodoLista);
 
-        if (e.getCodigo() < nodo.getDato().getCodigo()) {
-            nodo.setIzq(insertarRec(nodo.getIzq(), e));
-        } else if (e.getCodigo() > nodo.getDato().getCodigo()) {
-            nodo.setDer(insertarRec(nodo.getDer(), e));
+        if (codigo < nodo.getCodigo()) {
+            nodo.setIzq(insertarRec(nodo.getIzq(), codigo, nodoLista));
+        } else if (codigo > nodo.getCodigo()) {
+            nodo.setDer(insertarRec(nodo.getDer(), codigo, nodoLista));
         } else {
             return nodo;
         }
 
-        return rebalancear(nodo, e.getCodigo());
+        return rebalancear(nodo, codigo);
     }
 
     public void eliminar(int codigo) {
@@ -86,9 +87,9 @@ public class ArbolAVL {
     private NodoAVL eliminarRec(NodoAVL nodo, int codigo) {
         if (nodo == null) return nodo;
 
-        if (codigo < nodo.getDato().getCodigo()) {
+        if (codigo < nodo.getCodigo()) {
             nodo.setIzq(eliminarRec(nodo.getIzq(), codigo));
-        } else if (codigo > nodo.getDato().getCodigo()) {
+        } else if (codigo > nodo.getCodigo()) {
             nodo.setDer(eliminarRec(nodo.getDer(), codigo));
         } else {
             if ((nodo.getIzq() == null) || (nodo.getDer() == null)) {
@@ -101,8 +102,11 @@ public class ArbolAVL {
                 }
             } else {
                 NodoAVL temp = nodoMinimo(nodo.getDer());
-                nodo.setDato(temp.getDato());
-                nodo.setDer(eliminarRec(nodo.getDer(), temp.getDato().getCodigo()));
+
+                nodo.setCodigo(temp.getCodigo());
+                nodo.setNodo(temp.getNodo());
+
+                nodo.setDer(eliminarRec(nodo.getDer(), temp.getCodigo()));
             }
         }
 
@@ -133,15 +137,15 @@ public class ArbolAVL {
         return actual;
     }
 
-    public Estudiante buscar(int codigo) {
+    public Nodo buscar(int codigo) {
         return buscarRec(raiz, codigo);
     }
 
-    private Estudiante buscarRec(NodoAVL nodo, int codigo) {
+    private Nodo buscarRec(NodoAVL nodo, int codigo) {
         if (nodo == null) return null;
-        if (codigo == nodo.getDato().getCodigo()) return nodo.getDato();
+        if (codigo == nodo.getCodigo()) return nodo.getNodo(); // Retorna el enlace de la LL
 
-        return (codigo < nodo.getDato().getCodigo())
+        return (codigo < nodo.getCodigo())
                 ? buscarRec(nodo.getIzq(), codigo)
                 : buscarRec(nodo.getDer(), codigo);
     }
@@ -153,7 +157,8 @@ public class ArbolAVL {
     private void inorden(NodoAVL nodo) {
         if (nodo != null) {
             inorden(nodo.getIzq());
-            System.out.println(nodo.getDato());
+            // El árbol viaja mediante el puntero para imprimir al estudiante real
+            System.out.println(nodo.getNodo().getEstudiante());
             inorden(nodo.getDer());
         }
     }

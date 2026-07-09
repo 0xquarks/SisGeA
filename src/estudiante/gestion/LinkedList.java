@@ -3,16 +3,18 @@ package estudiante.gestion;
 import estudiante.Estudiante;
 
 public class LinkedList {
-    private Nodo cabeza = null;
+    private Nodo head = null;
 
-    public void insertarAlInicio(Estudiante estudiante) {
+    public Nodo insertar(Estudiante estudiante) {
         Nodo nuevoNodo = new Nodo(estudiante);
-        nuevoNodo.setSig(cabeza);
-        cabeza = nuevoNodo;
+        nuevoNodo.setSig(head);
+        head = nuevoNodo;
+
+        return nuevoNodo;
     }
 
     public Estudiante buscar(int codigo) {
-        Nodo actual = cabeza;
+        Nodo actual = head;
         while (actual != null) {
             if (actual.getEstudiante().getCodigo() == codigo) {
                 return actual.getEstudiante();
@@ -23,11 +25,11 @@ public class LinkedList {
     }
 
     public void listar() {
-        if (cabeza == null) {
+        if (head == null) {
             System.out.println("La lista está vacía.");
             return;
         }
-        Nodo temporal = cabeza;
+        Nodo temporal = head;
         while (temporal != null) {
             System.out.println(temporal.getEstudiante());
             temporal = temporal.getSig();
@@ -46,14 +48,14 @@ public class LinkedList {
     }
 
     public boolean eliminar(int codigo) {
-        if (cabeza == null) return false;
+        if (head == null) return false;
 
-        if (cabeza.getEstudiante().getCodigo() == codigo) {
-            cabeza = cabeza.getSig();
+        if (head.getEstudiante().getCodigo() == codigo) {
+            head = head.getSig();
             return true;
         }
 
-        Nodo actual = cabeza;
+        Nodo actual = head;
         while (actual.getSig() != null && actual.getSig().getEstudiante().getCodigo() != codigo) {
             actual = actual.getSig();
         }
@@ -65,7 +67,10 @@ public class LinkedList {
         return false;
     }
 
-    public Nodo getCabeza() {
-        return cabeza;
+    public Nodo getHead() {
+        return head;
+    }
+
+    public void insertarAlInicio(Estudiante nuevo) {
     }
 }

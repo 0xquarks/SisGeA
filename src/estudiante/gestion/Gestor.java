@@ -15,14 +15,18 @@ public class Gestor {
 
         Estudiante nuevo = new Estudiante(codigo, nombre, carrera);
 
-        listaSecuencial.insertarAlInicio(nuevo);
-        arbolIndexado.insertar(nuevo);
+        Nodo ref = listaSecuencial.insertar(nuevo);
+
+        arbolIndexado.insertar(codigo, ref);
+        System.out.println("Estudiante registrado exitosamente.");
     }
 
     public boolean modificarEstudiante(int codigo, String nuevoNombre, String nuevaCarrera) {
-        boolean modificadoEnLista = listaSecuencial.actualizar(codigo, nuevoNombre, nuevaCarrera);
+        Nodo refNodo = arbolIndexado.buscar(codigo);
 
-        if (modificadoEnLista) {
+        if (refNodo != null) {
+            refNodo.getEstudiante().setNombre(nuevoNombre);
+            refNodo.getEstudiante().setCarrera(nuevaCarrera);
             return true;
         }
         return false;
@@ -38,7 +42,9 @@ public class Gestor {
     }
 
     public Estudiante consultarEstudiante(int codigo) {
-        return arbolIndexado.buscar(codigo);
+        Nodo refNodo = arbolIndexado.buscar(codigo);
+
+        return (refNodo != null) ? refNodo.getEstudiante() : null;
     }
 
     public void listarTodos() {

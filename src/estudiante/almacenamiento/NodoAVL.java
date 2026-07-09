@@ -1,32 +1,40 @@
 package estudiante.almacenamiento;
 
-import estudiante.Estudiante;
+import estudiante.gestion.Nodo; // Importamos el Nodo de la Lista Enlazada
 
 public class NodoAVL {
-    private Estudiante dato;
+    private int codigo;
+    private Nodo nodo;
 
     private NodoAVL izq;
     private NodoAVL der;
-
     private int altura;
 
-    public NodoAVL(Estudiante dato) {
-        this.dato = dato;
+    public NodoAVL(int codigo, Nodo nodo) {
+        this.codigo = codigo;
+        this.nodo = nodo;
         this.altura = 1;
     }
 
-    public Estudiante getDato() {
-        return dato;
+    public int getCodigo() {
+        return codigo;
     }
 
-    public void setDato(Estudiante dato) {
-        this.dato = dato;
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
+    }
+
+    public Nodo getNodo() {
+        return nodo;
+    }
+
+    public void setNodo(Nodo nodo) {
+        this.nodo = nodo;
     }
 
     public NodoAVL getIzq() {
         return izq;
     }
-
     public void setIzq(NodoAVL izq) {
         this.izq = izq;
     }
