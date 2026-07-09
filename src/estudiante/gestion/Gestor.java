@@ -50,4 +50,13 @@ public class Gestor {
     public void listarTodos() {
         arbolIndexado.mostrarArbol();
     }
+    
+    /*
+     * Para que RankingAcademico y Ordenamiento puedan
+     * recorrer todos los estudiantes, necesitaremos agregar un método muy pequeño
+     */
+    
+    public LinkedList getListaSecuencial() {
+        return listaSecuencial;
+    }
 }
