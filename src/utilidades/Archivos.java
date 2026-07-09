@@ -1,24 +1,24 @@
-package utils;
+package utilidades;
 
-import gestion.GestorEstudiantes;
+import estudiante.gestion.Gestor;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Loaders {
+public class Archivos {
 
-    public static void cargarEstudiantes(String rutaArchivo, GestorEstudiantes gestor) {
+    public static void loadFile(String file, Gestor gestor) {
         StringBuilder contenido = new StringBuilder();
         
-        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 contenido.append(linea);
             }
         } catch (IOException e) {
-            System.out.println("⚠️ No se pudo leer el archivo: " + e.getMessage());
+            System.out.println("No se pudo leer el archivo: " + e.getMessage());
             return;
         }
 
@@ -34,6 +34,6 @@ public class Loaders {
             gestor.registrarEstudiante(codigo, nombre, carrera);
             cargados++;
         }
-        System.out.println("✅ Carga automática completada. Estudiantes procesados: " + cargados);
+        System.out.println("Estudiantes procesados: " + cargados);
     }
 }
