@@ -59,4 +59,16 @@ public class Gestor {
     public LinkedList getListaSecuencial() {
         return listaSecuencial;
     }
+
+    public void setListaSecuencial(LinkedList listaSecuencial) {
+        this.listaSecuencial = listaSecuencial;
+    }
+
+    public ArbolAVL getArbolIndexado() {
+        return arbolIndexado;
+    }
+
+    public void setArbolIndexado(ArbolAVL arbolIndexado) {
+        this.arbolIndexado = arbolIndexado;
+    }
 }
