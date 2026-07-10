@@ -34,38 +34,38 @@ public class RankingAcademico {
      * Genera el ranking utilizando QuickSort.
      */
     public void generarRanking() {
-
         LinkedList lista = gestor.getListaSecuencial();
-
-        ranking = new Estudiante[gestorCalificaciones.getCantidad()];
-
+        
+        // Contar cuántos estudiantes hay en la lista
         Nodo actual = lista.getHead();
-
-        int i = 0;
-
-        while (actual != null && i < ranking.length) {
-
-            ranking[i] = actual.getEstudiante();
-
+        int contador = 0;
+        while (actual != null) {
+            contador++;
             actual = actual.getSig();
-
-            i++;
-
         }
-
+        
+        // Crear arreglo del tamaño correcto
+        ranking = new Estudiante[contador];
+        
+        // Llenar el arreglo
+        actual = lista.getHead();
+        int i = 0;
+        while (actual != null && i < ranking.length) {
+            ranking[i] = actual.getEstudiante();
+            actual = actual.getSig();
+            i++;
+        }
+        
+        // Verificar que no haya elementos null
         if (ranking.length > 1) {
-
             ordenamiento.quickSort(
                     ranking,
                     gestorCalificaciones,
                     0,
                     ranking.length - 1
             );
-
         }
-
     }
-
     /*
      * Muestra el ranking completo.
      */

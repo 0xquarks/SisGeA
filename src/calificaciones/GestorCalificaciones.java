@@ -76,26 +76,21 @@ public class GestorCalificaciones {
      * Registra una nota.
      */
     public void registrarNota(int codigo, String materia, double nota) {
-
-        int fila = buscarFila(codigo);
-
-        if (fila == -1) {
-
-            agregarEstudiante(codigo);
-
-            fila = buscarFila(codigo);
+        try {
+            int fila = buscarFila(codigo);
+            if (fila == -1) {
+                agregarEstudiante(codigo);
+                fila = buscarFila(codigo);
+            }
+            int columna = obtenerColumna(materia);
+            if (columna == -1) {
+                System.out.println("Materia no válida.");
+                return;
+            }
+            notas[fila][columna] = nota;
+        } catch (Exception e) {
+            System.out.println("Error al registrar la nota: " + e.getMessage());
         }
-
-        int columna = obtenerColumna(materia);
-
-        if (columna == -1) {
-
-            System.out.println("Materia no válida.");
-
-            return;
-        }
-
-        notas[fila][columna] = nota;
     }
 
     /*

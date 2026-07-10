@@ -45,55 +45,28 @@ public class Archivos {
      * codigo,nota1,nota2,nota3
      */
     public static void cargarCalificaciones(String archivo, GestorCalificaciones gestorCalificaciones) {
-
-        try {
-
-            BufferedReader br = new BufferedReader(new FileReader(archivo));
-
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
-
             while ((linea = br.readLine()) != null) {
-
-                String[] datos = linea.split(",");
-
-                if (datos.length == 4) {
-
-                    int codigo = Integer.parseInt(datos[0]);
-
-                    double matematica = Double.parseDouble(datos[1]);
-
-                    double programacion = Double.parseDouble(datos[2]);
-
-                    double fisica = Double.parseDouble(datos[3]);
-
-                    gestorCalificaciones.registrarNota(
-                            codigo,
-                            Materia.MATEMATICAS,
-                            matematica);
-
-                    gestorCalificaciones.registrarNota(
-                            codigo,
-                            Materia.PROGRAMACION,
-                            programacion);
-
-                    gestorCalificaciones.registrarNota(
-                            codigo,
-                            Materia.FISICA,
-                            fisica);
-
+                try {
+                    String[] datos = linea.split(",");
+                    if (datos.length == 4) {
+                        int codigo = Integer.parseInt(datos[0].trim());
+                        double matematica = Double.parseDouble(datos[1].trim());
+                        double programacion = Double.parseDouble(datos[2].trim());
+                        double fisica = Double.parseDouble(datos[3].trim());
+                        
+                        gestorCalificaciones.registrarNota(codigo, Materia.MATEMATICAS, matematica);
+                        gestorCalificaciones.registrarNota(codigo, Materia.PROGRAMACION, programacion);
+                        gestorCalificaciones.registrarNota(codigo, Materia.FISICA, fisica);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Error en línea: " + linea + " - " + e.getMessage());
                 }
-
             }
-
-            br.close();
-
             System.out.println("Calificaciones cargadas correctamente.");
-
         } catch (IOException e) {
-
-            System.out.println("No se pudo leer el archivo de calificaciones.");
-
+            System.out.println("No se pudo leer el archivo de calificaciones: " + e.getMessage());
         }
-
     }
 }
