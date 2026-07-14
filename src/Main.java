@@ -7,11 +7,39 @@ import calificaciones.Materia;
 
 import ranking.RankingAcademico;
 
+import busqueda.Buscador;
+
+import interfaz.VentanaPrincipal;
+
 import java.util.Scanner;
 
 public class Main {
 
+    /*
+     * Punto de entrada del programa. Por defecto se lanza la
+     * interfaz grafica (Swing), que es ahora el medio principal de
+     * interaccion con el sistema. El menu de consola original se
+     * conserva intacto y puede ejecutarse pasando el argumento
+     * "consola" (por ejemplo, util para pruebas rapidas).
+     */
     public static void main(String[] args) {
+
+        if (args.length > 0 && args[0].equalsIgnoreCase("consola")) {
+
+            ejecutarConsola();
+
+        } else {
+
+            javax.swing.SwingUtilities.invokeLater(() -> new VentanaPrincipal());
+
+        }
+    }
+
+    /*
+     * Menu de consola original del proyecto. Se mantiene sin
+     * modificaciones como alternativa a la interfaz grafica.
+     */
+    private static void ejecutarConsola() {
 
         Gestor gestor = new Gestor();
 
@@ -40,6 +68,8 @@ public class Main {
                         gestor,
                         gestorCalificaciones
                 );
+
+        Buscador buscador = new Buscador();
 
         int opcion;
 
@@ -72,6 +102,18 @@ public class Main {
             System.out.println("11. Promedio materia");
 
             System.out.println("12. Ranking");
+
+            System.out.println("13. Buscar estudiante (busqueda lineal)");
+
+            System.out.println("14. Buscar estudiante (busqueda binaria)");
+
+            System.out.println("15. Comparar busqueda lineal vs binaria");
+
+            System.out.println("16. Comparar BubbleSort vs QuickSort");
+
+            System.out.println("17. Ranking por materia");
+
+            System.out.println("18. Reporte de promedios individuales");
 
             System.out.println("0. Salir");
 
@@ -320,6 +362,214 @@ public class Main {
                         System.out.println(
                                 "Peor estudiante: "
                                         + peor.getNombre()
+                        );
+
+                    }
+
+                    break;
+
+                case 13:
+
+                    System.out.print("Codigo: ");
+
+                    try {
+
+                        codigo = Integer.parseInt(scanner.nextLine());
+
+                        Estudiante[] arregloLineal =
+                                buscador.obtenerArreglo(gestor);
+
+                        Estudiante resultadoLineal =
+                                buscador.buscarLineal(arregloLineal, codigo);
+
+                        if (resultadoLineal != null) {
+
+                            System.out.println(resultadoLineal);
+
+                        } else {
+
+                            System.out.println("No encontrado.");
+
+                        }
+
+                        System.out.println(
+                                "Comparaciones: "
+                                        + buscador.getComparaciones()
+                        );
+
+                        System.out.println(
+                                "Tiempo (ms)  : "
+                                        + buscador.getTiempoMs()
+                        );
+
+                    } catch (Exception e) {
+
+                        System.out.println("Codigo invalido.");
+
+                    }
+
+                    break;
+
+                case 14:
+
+                    System.out.print("Codigo: ");
+
+                    try {
+
+                        codigo = Integer.parseInt(scanner.nextLine());
+
+                        Estudiante[] arregloBinaria =
+                                buscador.obtenerArreglo(gestor);
+
+                        Estudiante resultadoBinaria =
+                                buscador.buscarBinaria(arregloBinaria, codigo);
+
+                        if (resultadoBinaria != null) {
+
+                            System.out.println(resultadoBinaria);
+
+                        } else {
+
+                            System.out.println("No encontrado.");
+
+                        }
+
+                        System.out.println(
+                                "Comparaciones: "
+                                        + buscador.getComparaciones()
+                        );
+
+                        System.out.println(
+                                "Tiempo (ms)  : "
+                                        + buscador.getTiempoMs()
+                        );
+
+                    } catch (Exception e) {
+
+                        System.out.println("Codigo invalido.");
+
+                    }
+
+                    break;
+
+                case 15:
+
+                    System.out.print("Codigo: ");
+
+                    try {
+
+                        codigo = Integer.parseInt(scanner.nextLine());
+
+                        Estudiante[] arregloComparar =
+                                buscador.obtenerArreglo(gestor);
+
+                        Estudiante porLineal =
+                                buscador.buscarLineal(arregloComparar, codigo);
+
+                        int comparacionesLineal = buscador.getComparaciones();
+                        long tiempoLineal = buscador.getTiempoMs();
+
+                        Estudiante porBinaria =
+                                buscador.buscarBinaria(arregloComparar, codigo);
+
+                        int comparacionesBinaria = buscador.getComparaciones();
+                        long tiempoBinaria = buscador.getTiempoMs();
+
+                        System.out.println();
+                        System.out.println("BUSQUEDA LINEAL");
+
+                        System.out.println(
+                                "  Resultado     : "
+                                        + (porLineal != null ? porLineal.getNombre() : "No encontrado")
+                        );
+
+                        System.out.println("  Comparaciones : " + comparacionesLineal);
+
+                        System.out.println("  Tiempo (ms)   : " + tiempoLineal);
+
+                        System.out.println();
+                        System.out.println("BUSQUEDA BINARIA");
+
+                        System.out.println(
+                                "  Resultado     : "
+                                        + (porBinaria != null ? porBinaria.getNombre() : "No encontrado")
+                        );
+
+                        System.out.println("  Comparaciones : " + comparacionesBinaria);
+
+                        System.out.println("  Tiempo (ms)   : " + tiempoBinaria);
+
+                    } catch (Exception e) {
+
+                        System.out.println("Codigo invalido.");
+
+                    }
+
+                    break;
+
+                case 16:
+
+                    ranking.compararOrdenamientos();
+
+                    break;
+
+                case 17:
+
+                    System.out.println("1. Matematicas");
+                    System.out.println("2. Programacion");
+                    System.out.println("3. Fisica");
+                    System.out.print("Opcion materia: ");
+
+                    try {
+
+                        int opcionMateria = Integer.parseInt(scanner.nextLine());
+
+                        String materiaElegida;
+
+                        if (opcionMateria == 1) {
+                            materiaElegida = Materia.MATEMATICAS;
+                        } else if (opcionMateria == 2) {
+                            materiaElegida = Materia.PROGRAMACION;
+                        } else if (opcionMateria == 3) {
+                            materiaElegida = Materia.FISICA;
+                        } else {
+                            materiaElegida = null;
+                        }
+
+                        if (materiaElegida != null) {
+
+                            ranking.mostrarRankingPorMateria(materiaElegida);
+
+                        } else {
+
+                            System.out.println("Opcion invalida.");
+
+                        }
+
+                    } catch (Exception e) {
+
+                        System.out.println("Opcion invalida.");
+
+                    }
+
+                    break;
+
+                case 18:
+
+                    Estudiante[] arregloReporte =
+                            buscador.obtenerArreglo(gestor);
+
+                    System.out.println();
+                    System.out.println("REPORTE DE PROMEDIOS INDIVIDUALES");
+
+                    for (int i = 0; i < arregloReporte.length; i++) {
+
+                        System.out.printf(
+                                "Codigo: %d | Nombre: %s | Promedio: %.2f%n",
+                                arregloReporte[i].getCodigo(),
+                                arregloReporte[i].getNombre(),
+                                gestorCalificaciones.calcularPromedio(
+                                        arregloReporte[i].getCodigo())
                         );
 
                     }
