@@ -138,4 +138,117 @@ public class RankingAcademico {
 
     }
 
+    /*
+     * Compara el rendimiento de BubbleSort y QuickSort
+     * ordenando una copia del ranking con cada algoritmo.
+     */
+    public void compararOrdenamientos() {
+
+        if (ranking == null) {
+
+            System.out.println("Primero debe generar el ranking.");
+
+            return;
+
+        }
+
+        Estudiante[] paraBubble = ranking.clone();
+
+        Estudiante[] paraQuick = ranking.clone();
+
+        ordenamiento.bubbleSort(paraBubble, gestorCalificaciones);
+
+        int comparacionesBubble = ordenamiento.getComparaciones();
+        int intercambiosBubble = ordenamiento.getIntercambios();
+        long tiempoBubble = ordenamiento.getTiempoMs();
+
+        if (paraQuick.length > 1) {
+
+            ordenamiento.quickSort(
+                    paraQuick,
+                    gestorCalificaciones,
+                    0,
+                    paraQuick.length - 1
+            );
+
+        }
+
+        int comparacionesQuick = ordenamiento.getComparaciones();
+        int intercambiosQuick = ordenamiento.getIntercambios();
+        long tiempoQuick = ordenamiento.getTiempoMs();
+
+        System.out.println();
+
+        System.out.println("COMPARACION BUBBLESORT VS QUICKSORT");
+
+        System.out.println();
+        System.out.println("BubbleSort");
+        System.out.println("  Comparaciones : " + comparacionesBubble);
+        System.out.println("  Intercambios  : " + intercambiosBubble);
+        System.out.println("  Tiempo (ms)   : " + tiempoBubble);
+
+        System.out.println();
+        System.out.println("QuickSort");
+        System.out.println("  Comparaciones : " + comparacionesQuick);
+        System.out.println("  Intercambios  : " + intercambiosQuick);
+        System.out.println("  Tiempo (ms)   : " + tiempoQuick);
+
+    }
+
+    /*
+     * Muestra el ranking de estudiantes ordenado
+     * según la nota obtenida en una materia especifica.
+     */
+    public void mostrarRankingPorMateria(String materia) {
+
+        if (ranking == null) {
+
+            System.out.println("Primero debe generar el ranking.");
+
+            return;
+
+        }
+
+        Estudiante[] porMateria = ranking.clone();
+
+        for (int i = 0; i < porMateria.length - 1; i++) {
+
+            for (int j = 0; j < porMateria.length - i - 1; j++) {
+
+                double nota1 = gestorCalificaciones.consultarNota(
+                        porMateria[j].getCodigo(), materia);
+
+                double nota2 = gestorCalificaciones.consultarNota(
+                        porMateria[j + 1].getCodigo(), materia);
+
+                if (nota1 < nota2) {
+
+                    Estudiante aux = porMateria[j];
+                    porMateria[j] = porMateria[j + 1];
+                    porMateria[j + 1] = aux;
+
+                }
+
+            }
+
+        }
+
+        System.out.println();
+
+        System.out.println("RANKING - " + materia);
+
+        for (int i = 0; i < porMateria.length; i++) {
+
+            System.out.printf(
+                    "%d. %s  Nota: %.2f%n",
+                    i + 1,
+                    porMateria[i].getNombre(),
+                    gestorCalificaciones.consultarNota(
+                            porMateria[i].getCodigo(), materia)
+            );
+
+        }
+
+    }
+
 }
