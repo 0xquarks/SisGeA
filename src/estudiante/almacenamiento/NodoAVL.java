@@ -40,7 +40,9 @@ public class NodoAVL {
 
     // Asigna la referencia de este nodo AVL a un nodo específico en la lista enlazada.
     public void setNodo(Nodo nodo) {
-        this.nodo = nodo;
+        if (nodo != null) {
+            this.nodo = nodo;
+        }
     }
 
     // Retorna el subárbol izquierdo.
@@ -70,6 +72,8 @@ public class NodoAVL {
 
     // Actualiza el valor de la altura de este nodo tras una inserción, eliminación o rotación.
     public void setAltura(int altura) {
-        this.altura = altura;
+        if (altura >= 1) {
+            this.altura = altura;
+        }
     }
 }

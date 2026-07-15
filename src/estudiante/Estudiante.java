@@ -11,9 +11,9 @@ public class Estudiante {
 
     // Constructor que inicializa un estudiante con su código, nombre y carrera correspondientes.
     public Estudiante(int codigo, String nombre, String carrera) {
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.carrera = carrera;
+        this.codigo = Math.max(0, codigo);
+        this.nombre = (nombre != null && !nombre.trim().isEmpty()) ? nombre.trim() : "Desconocido";
+        this.carrera = (carrera != null && !carrera.trim().isEmpty()) ? carrera.trim() : "Sin asignar";
     }
 
     // Retorna el código único de identificación del estudiante.
@@ -23,7 +23,9 @@ public class Estudiante {
 
     // Permite modificar el código de identificación del estudiante.
     public void setCodigo(int codigo) {
-        this.codigo = codigo;
+        if (codigo >= 0) {
+            this.codigo = codigo;
+        }
     }
 
     // Retorna el nombre completo del estudiante.
@@ -33,7 +35,9 @@ public class Estudiante {
 
     // Permite actualizar el nombre completo del estudiante.
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        if (nombre != null && !nombre.trim().isEmpty()) {
+            this.nombre = nombre.trim();
+        }
     }
 
     // Retorna la carrera que está cursando el estudiante.
@@ -43,7 +47,9 @@ public class Estudiante {
 
     // Permite actualizar la carrera en la que está inscrito el estudiante.
     public void setCarrera(String carrera) {
-        this.carrera = carrera;
+        if (carrera != null && !carrera.trim().isEmpty()) {
+            this.carrera = carrera.trim();
+        }
     }
 
     // Devuelve una representación legible en texto con los atributos del estudiante.

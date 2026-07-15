@@ -19,6 +19,9 @@ public class ArbolAVL {
 
     // Realiza una rotación simple a la derecha sobre el nodo recibido para balancear el árbol.
     private NodoAVL rotarDerecha(NodoAVL y) {
+        if (y == null || y.getIzq() == null) {
+            return y;
+        }
         NodoAVL x = y.getIzq();
         NodoAVL T2 = x.getDer();
 
@@ -33,6 +36,9 @@ public class ArbolAVL {
 
     // Realiza una rotación simple a la izquierda sobre el nodo recibido para balancear el árbol.
     private NodoAVL rotarIzquierda(NodoAVL x) {
+        if (x == null || x.getDer() == null) {
+            return x;
+        }
         NodoAVL y = x.getDer();
         NodoAVL T2 = y.getIzq();
 
@@ -47,20 +53,23 @@ public class ArbolAVL {
 
     // Comprueba el balance del nodo y ejecuta las rotaciones necesarias según el caso detectado.
     private NodoAVL rebalancear(NodoAVL nodo, int codigo) {
+        if (nodo == null) {
+            return null;
+        }
         nodo.setAltura(1 + Math.max(altura(nodo.getIzq()), altura(nodo.getDer())));
         int balance = obtenerBalance(nodo);
 
-        if (balance > 1 && codigo < nodo.getIzq().getCodigo()) {
+        if (balance > 1 && nodo.getIzq() != null && codigo < nodo.getIzq().getCodigo()) {
             return rotarDerecha(nodo);
         }
-        if (balance < -1 && codigo > nodo.getDer().getCodigo()) {
+        if (balance < -1 && nodo.getDer() != null && codigo > nodo.getDer().getCodigo()) {
             return rotarIzquierda(nodo);
         }
-        if (balance > 1 && codigo > nodo.getIzq().getCodigo()) {
-            nodeIzqRotado: nodo.setIzq(rotarIzquierda(nodo.getIzq()));
+        if (balance > 1 && nodo.getIzq() != null && codigo > nodo.getIzq().getCodigo()) {
+            nodo.setIzq(rotarIzquierda(nodo.getIzq()));
             return rotarDerecha(nodo);
         }
-        if (balance < -1 && codigo < nodo.getDer().getCodigo()) {
+        if (balance < -1 && nodo.getDer() != null && codigo < nodo.getDer().getCodigo()) {
             nodo.setDer(rotarDerecha(nodo.getDer()));
             return rotarIzquierda(nodo);
         }
@@ -70,6 +79,9 @@ public class ArbolAVL {
 
     // Inserta públicamente un nuevo índice con su respectivo código y referencia de nodo.
     public void insertar(int codigo, Nodo nodoLista) {
+        if (nodoLista == null || nodoLista.getEstudiante() == null) {
+            return;
+        }
         raiz = insertarRec(raiz, codigo, nodoLista);
     }
 
@@ -112,11 +124,11 @@ public class ArbolAVL {
                 }
             } else {
                 NodoAVL temp = nodoMinimo(nodo.getDer());
-
-                nodo.setCodigo(temp.getCodigo());
-                nodo.setNodo(temp.getNodo());
-
-                nodo.setDer(eliminarRec(nodo.getDer(), temp.getCodigo()));
+                if (temp != null) {
+                    nodo.setCodigo(temp.getCodigo());
+                    nodo.setNodo(temp.getNodo());
+                    nodo.setDer(eliminarRec(nodo.getDer(), temp.getCodigo()));
+                }
             }
         }
 
@@ -141,6 +153,7 @@ public class ArbolAVL {
 
     // Localiza recursivamente el nodo con el valor de código más pequeño en un subárbol.
     private NodoAVL nodoMinimo(NodoAVL nodo) {
+        if (nodo == null) return null;
         NodoAVL actual = nodo;
         while (actual.getIzq() != null) {
             actual = actual.getIzq();
@@ -165,6 +178,10 @@ public class ArbolAVL {
 
     // Inicia el proceso de impresión ordenada de los estudiantes almacenados.
     public void mostrarArbol() {
+        if (raiz == null) {
+            System.out.println("El árbol está vacío.");
+            return;
+        }
         inorden(raiz);
     }
 
@@ -172,7 +189,9 @@ public class ArbolAVL {
     private void inorden(NodoAVL nodo) {
         if (nodo != null) {
             inorden(nodo.getIzq());
-            System.out.println(nodo.getNodo().getEstudiante());
+            if (nodo.getNodo() != null && nodo.getNodo().getEstudiante() != null) {
+                System.out.println(nodo.getNodo().getEstudiante());
+            }
             inorden(nodo.getDer());
         }
     }

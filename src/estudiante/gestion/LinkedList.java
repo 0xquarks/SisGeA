@@ -8,6 +8,9 @@ public class LinkedList {
 
     // Inserta un nuevo estudiante al inicio de la lista y retorna el nodo creado.
     public Nodo insertar(Estudiante estudiante) {
+        if (estudiante == null) {
+            return null;
+        }
         Nodo nuevoNodo = new Nodo(estudiante);
         nuevoNodo.setSig(head);
         head = nuevoNodo;
@@ -19,7 +22,7 @@ public class LinkedList {
     public Estudiante buscar(int codigo) {
         Nodo actual = head;
         while (actual != null) {
-            if (actual.getEstudiante().getCodigo() == codigo) {
+            if (actual.getEstudiante() != null && actual.getEstudiante().getCodigo() == codigo) {
                 return actual.getEstudiante();
             }
             actual = actual.getSig();
@@ -35,17 +38,22 @@ public class LinkedList {
         }
         Nodo temporal = head;
         while (temporal != null) {
-            System.out.println(temporal.getEstudiante());
+            if (temporal.getEstudiante() != null) {
+                System.out.println(temporal.getEstudiante());
+            }
             temporal = temporal.getSig();
         }
     }
 
     // Busca un estudiante por código y actualiza su nombre y carrera.
     public boolean actualizar(int codigo, String nuevoNombre, String nuevaCarrera) {
+        if (nuevoNombre == null || nuevoNombre.trim().isEmpty() || nuevaCarrera == null || nuevaCarrera.trim().isEmpty()) {
+            return false;
+        }
         Estudiante estudiante = buscar(codigo);
         if (estudiante != null) {
-            estudiante.setNombre(nuevoNombre);
-            estudiante.setCarrera(nuevaCarrera);
+            estudiante.setNombre(nuevoNombre.trim());
+            estudiante.setCarrera(nuevaCarrera.trim());
             return true;
         }
         return false;
@@ -55,19 +63,19 @@ public class LinkedList {
     public boolean eliminar(int codigo) {
         if (head == null) return false;
 
-        if (head.getEstudiante().getCodigo() == codigo) {
+        if (head.getEstudiante() != null && head.getEstudiante().getCodigo() == codigo) {
             head = head.getSig();
             return true;
         }
 
         Nodo actual = head;
-        while (actual.getSig() != null && actual.getSig().getEstudiante().getCodigo() != codigo) {
+        while (actual.getSig() != null) {
+            Estudiante sigEstudiante = actual.getSig().getEstudiante();
+            if (sigEstudiante != null && sigEstudiante.getCodigo() == codigo) {
+                actual.setSig(actual.getSig().getSig());
+                return true;
+            }
             actual = actual.getSig();
-        }
-
-        if (actual.getSig() != null) {
-            actual.setSig(actual.getSig().getSig());
-            return true;
         }
         return false;
     }
@@ -79,5 +87,8 @@ public class LinkedList {
 
     // Método auxiliar para insertar un estudiante directamente al principio de la lista.
     public void insertarAlInicio(Estudiante nuevo) {
+        if (nuevo != null) {
+            insertar(nuevo);
+        }
     }
 }
