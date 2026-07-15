@@ -5,56 +5,35 @@ import estudiante.gestion.Gestor;
 import calificaciones.GestorCalificaciones;
 import busqueda.Buscador;
 import ranking.RankingAcademico;
-
 import javax.swing.*;
 import java.awt.*;
 
 /*
  * Panel de presentación para los reportes del sistema (Módulo 6).
- * Solo consume métodos públicos ya existentes de Gestor,
- * GestorCalificaciones, Buscador y RankingAcademico; no contiene
- * lógica de negocio propia.
+ * Consume métodos públicos de negocio y previene fallos ante datos incompletos.
  */
 public class PanelReportes extends JPanel {
-
     private Gestor gestor;
-
     private GestorCalificaciones gestorCalificaciones;
-
     private Buscador buscador;
-
     private RankingAcademico ranking;
-
     private JTextArea areaResultado;
 
-    public PanelReportes(Gestor gestor,
-                         GestorCalificaciones gestorCalificaciones,
-                         Buscador buscador,
-                         RankingAcademico ranking) {
-
+    public PanelReportes(Gestor gestor, GestorCalificaciones gestorCalificaciones, Buscador buscador, RankingAcademico ranking) {
         this.gestor = gestor;
-
         this.gestorCalificaciones = gestorCalificaciones;
-
         this.buscador = buscador;
-
         this.ranking = ranking;
 
         setLayout(new BorderLayout(10, 10));
-
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
         add(crearPanelBotones(), BorderLayout.NORTH);
-
         add(crearPanelResultado(), BorderLayout.CENTER);
     }
 
     private JPanel crearPanelBotones() {
-
         JPanel panel = new JPanel();
-
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
         panel.setBorder(BorderFactory.createTitledBorder("Reportes del sistema"));
 
         JButton reporte1 = new JButton("Reporte 1: Listado completo de estudiantes");
@@ -79,94 +58,86 @@ public class PanelReportes extends JPanel {
         panel.add(reporte3y4);
         panel.add(Box.createVerticalStrut(4));
         panel.add(reporte5);
-
         return panel;
     }
 
     private JScrollPane crearPanelResultado() {
-
         areaResultado = new JTextArea();
-
         areaResultado.setEditable(false);
-
         areaResultado.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
-
         return new JScrollPane(areaResultado);
     }
 
-    /*
-     * Reporte 1: reutiliza Gestor.listarTodos(), capturando su salida.
-     */
+    // Reporte 1: Captura salida de consola de forma segura previniendo fallos de impresión.
     private void reporteListadoCompleto() {
-
-        String salida = CapturadorConsola.capturar(() -> gestor.listarTodos());
-
-        areaResultado.setText(salida);
+        try {
+            String salida = CapturadorConsola.capturar(() -> gestor.listarTodos());
+            if (salida == null || salida.trim().isEmpty()) {
+                areaResultado.setText("No hay estudiantes registrados para listar.");
+            } else {
+                areaResultado.setText(salida);
+            }
+        } catch (Exception e) {
+            areaResultado.setText("Error al generar el listado completo: " + e.getMessage());
+        }
     }
 
-    /*
-     * Reporte 2: promedio individual de cada estudiante, calculado con
-     * los metodos publicos ya existentes (Buscador y GestorCalificaciones).
-     */
+    // Reporte 2: Valida que el arreglo de estudiantes no sea nulo ni esté vacío antes de iterar.
     private void reportePromediosIndividuales() {
-
-        Estudiante[] estudiantes = buscador.obtenerArreglo(gestor);
-
-        StringBuilder texto = new StringBuilder();
-
-        texto.append("REPORTE DE PROMEDIOS INDIVIDUALES\n\n");
-
-        for (Estudiante estudiante : estudiantes) {
-
-            texto.append(String.format(
-                    "Codigo: %d | Nombre: %s | Promedio: %.2f%n",
-                    estudiante.getCodigo(),
-                    estudiante.getNombre(),
-                    gestorCalificaciones.calcularPromedio(estudiante.getCodigo())
-            ));
+        try {
+            Estudiante[] estudiantes = buscador.obtenerArreglo(gestor);
+            if (estudiantes == null || estudiantes.length == 0) {
+                areaResultado.setText("No hay estudiantes registrados en el sistema.");
+                return;
+            }
+            StringBuilder texto = new StringBuilder("REPORTE DE PROMEDIOS INDIVIDUALES\n\n");
+            for (Estudiante estudiante : estudiantes) {
+                if (estudiante != null) {
+                    double promedio = gestorCalificaciones.calcularPromedio(estudiante.getCodigo());
+                    texto.append(String.format("Código: %d | Nombre: %-25s | Promedio: %.2f%n",
+                            estudiante.getCodigo(), estudiante.getNombre(), promedio));
+                }
+            }
+            areaResultado.setText(texto.toString());
+        } catch (Exception e) {
+            areaResultado.setText("Error al calcular los promedios individuales:\n" + e.getMessage());
         }
-
-        areaResultado.setText(texto.toString());
     }
 
-    /*
-     * Reporte 3 y 4: mejor y peor estudiante, reutilizando
-     * RankingAcademico.generarRanking()/mejorEstudiante()/peorEstudiante().
-     */
+    // Reporte 3 y 4: Maneja el caso en que el ranking esté vacío o falle su generación.
     private void reporteMejorPeor() {
+        try {
+            ranking.generarRanking();
+            Estudiante mejor = ranking.mejorEstudiante();
+            Estudiante peor = ranking.peorEstudiante();
 
-        ranking.generarRanking();
-
-        Estudiante mejor = ranking.mejorEstudiante();
-
-        Estudiante peor = ranking.peorEstudiante();
-
-        StringBuilder texto = new StringBuilder();
-
-        texto.append("REPORTE: MEJOR Y PEOR PROMEDIO\n\n");
-
-        if (mejor != null) {
-            texto.append("Mejor estudiante: ").append(mejor.getNombre()).append("\n");
+            if (mejor == null && peor == null) {
+                areaResultado.setText("No es posible determinar el mejor/peor estudiante (datos insuficientes).");
+                return;
+            }
+            StringBuilder texto = new StringBuilder("REPORTE: MEJOR Y PEOR PROMEDIO\n\n");
+            texto.append("Mejor estudiante: ").append(mejor != null ? mejor.getNombre() : "N/D").append("\n");
+            texto.append("Peor estudiante : ").append(peor != null ? peor.getNombre() : "N/D");
+            areaResultado.setText(texto.toString());
+        } catch (Exception e) {
+            areaResultado.setText("Error al obtener los extremos académicos:\n" + e.getMessage());
         }
-
-        if (peor != null) {
-            texto.append("Peor estudiante : ").append(peor.getNombre());
-        }
-
-        areaResultado.setText(texto.toString());
     }
 
-    /*
-     * Reporte 5: ranking general, reutilizando
-     * RankingAcademico.generarRanking()/mostrarRanking() capturados.
-     */
+    // Reporte 5: Captura y maneja de forma segura errores al computar el ordenamiento del ranking.
     private void reporteRankingGeneral() {
-
-        String salida = CapturadorConsola.capturar(() -> {
-            ranking.generarRanking();
-            ranking.mostrarRanking();
-        });
-
-        areaResultado.setText(salida);
+        try {
+            String salida = CapturadorConsola.capturar(() -> {
+                ranking.generarRanking();
+                ranking.mostrarRanking();
+            });
+            if (salida == null || salida.trim().isEmpty()) {
+                areaResultado.setText("No se pudo estructurar el ranking general.");
+            } else {
+                areaResultado.setText(salida);
+            }
+        } catch (Exception e) {
+            areaResultado.setText("Error al computar el ranking general:\n" + e.getMessage());
+        }
     }
 }
