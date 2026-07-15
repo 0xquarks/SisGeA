@@ -3,8 +3,10 @@ package estudiante.gestion;
 import estudiante.Estudiante;
 
 public class LinkedList {
+    // Nodo inicial que representa la cabeza de la lista enlazada.
     private Nodo head = null;
 
+    // Inserta un nuevo estudiante al inicio de la lista y retorna el nodo creado.
     public Nodo insertar(Estudiante estudiante) {
         Nodo nuevoNodo = new Nodo(estudiante);
         nuevoNodo.setSig(head);
@@ -13,6 +15,7 @@ public class LinkedList {
         return nuevoNodo;
     }
 
+    // Recorre la lista secuencialmente para buscar un estudiante por su código.
     public Estudiante buscar(int codigo) {
         Nodo actual = head;
         while (actual != null) {
@@ -24,6 +27,7 @@ public class LinkedList {
         return null;
     }
 
+    // Imprime en consola la información de todos los estudiantes de la lista.
     public void listar() {
         if (head == null) {
             System.out.println("La lista está vacía.");
@@ -36,7 +40,7 @@ public class LinkedList {
         }
     }
 
-
+    // Busca un estudiante por código y actualiza su nombre y carrera.
     public boolean actualizar(int codigo, String nuevoNombre, String nuevaCarrera) {
         Estudiante estudiante = buscar(codigo);
         if (estudiante != null) {
@@ -47,6 +51,7 @@ public class LinkedList {
         return false;
     }
 
+    // Elimina el estudiante que coincida con el código desenlazando su nodo de la lista.
     public boolean eliminar(int codigo) {
         if (head == null) return false;
 
@@ -67,10 +72,12 @@ public class LinkedList {
         return false;
     }
 
+    // Retorna el primer nodo de la lista enlazada.
     public Nodo getHead() {
         return head;
     }
 
+    // Método auxiliar para insertar un estudiante directamente al principio de la lista.
     public void insertarAlInicio(Estudiante nuevo) {
     }
 }

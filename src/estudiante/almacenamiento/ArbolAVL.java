@@ -4,16 +4,20 @@ import estudiante.Estudiante;
 import estudiante.gestion.Nodo;
 
 public class ArbolAVL {
+    // Nodo raíz que sirve como punto de partida del árbol AVL.
     private NodoAVL raiz;
 
+    // Retorna la altura de un nodo, devolviendo 0 si el nodo es nulo.
     private int altura(NodoAVL nodo) {
         return (nodo == null) ? 0 : nodo.getAltura();
     }
 
+    // Calcula el factor de equilibrio restando la altura izquierda de la derecha.
     private int obtenerBalance(NodoAVL nodo) {
         return (nodo == null) ? 0 : altura(nodo.getIzq()) - altura(nodo.getDer());
     }
 
+    // Realiza una rotación simple a la derecha sobre el nodo recibido para balancear el árbol.
     private NodoAVL rotarDerecha(NodoAVL y) {
         NodoAVL x = y.getIzq();
         NodoAVL T2 = x.getDer();
@@ -27,6 +31,7 @@ public class ArbolAVL {
         return x;
     }
 
+    // Realiza una rotación simple a la izquierda sobre el nodo recibido para balancear el árbol.
     private NodoAVL rotarIzquierda(NodoAVL x) {
         NodoAVL y = x.getDer();
         NodoAVL T2 = y.getIzq();
@@ -40,6 +45,7 @@ public class ArbolAVL {
         return y;
     }
 
+    // Comprueba el balance del nodo y ejecuta las rotaciones necesarias según el caso detectado.
     private NodoAVL rebalancear(NodoAVL nodo, int codigo) {
         nodo.setAltura(1 + Math.max(altura(nodo.getIzq()), altura(nodo.getDer())));
         int balance = obtenerBalance(nodo);
@@ -51,7 +57,7 @@ public class ArbolAVL {
             return rotarIzquierda(nodo);
         }
         if (balance > 1 && codigo > nodo.getIzq().getCodigo()) {
-            nodo.setIzq(rotarIzquierda(nodo.getIzq()));
+            nodeIzqRotado: nodo.setIzq(rotarIzquierda(nodo.getIzq()));
             return rotarDerecha(nodo);
         }
         if (balance < -1 && codigo < nodo.getDer().getCodigo()) {
@@ -62,10 +68,12 @@ public class ArbolAVL {
         return nodo;
     }
 
+    // Inserta públicamente un nuevo índice con su respectivo código y referencia de nodo.
     public void insertar(int codigo, Nodo nodoLista) {
         raiz = insertarRec(raiz, codigo, nodoLista);
     }
 
+    // Inserta un nodo de forma recursiva y aplica rebalanceo dinámico de subárboles.
     private NodoAVL insertarRec(NodoAVL nodo, int codigo, Nodo nodoLista) {
         if (nodo == null) return new NodoAVL(codigo, nodoLista);
 
@@ -80,10 +88,12 @@ public class ArbolAVL {
         return rebalancear(nodo, codigo);
     }
 
+    // Elimina del árbol la indexación de un estudiante según su código.
     public void eliminar(int codigo) {
         raiz = eliminarRec(raiz, codigo);
     }
 
+    // Busca y elimina recursivamente el nodo del árbol, aplicando rebalanceo en el retroceso.
     private NodoAVL eliminarRec(NodoAVL nodo, int codigo) {
         if (nodo == null) return nodo;
 
@@ -129,6 +139,7 @@ public class ArbolAVL {
         return nodo;
     }
 
+    // Localiza recursivamente el nodo con el valor de código más pequeño en un subárbol.
     private NodoAVL nodoMinimo(NodoAVL nodo) {
         NodoAVL actual = nodo;
         while (actual.getIzq() != null) {
@@ -137,27 +148,30 @@ public class ArbolAVL {
         return actual;
     }
 
+    // Busca un código y retorna su referencia directa en la lista secuencial.
     public Nodo buscar(int codigo) {
         return buscarRec(raiz, codigo);
     }
 
+    // Busca de forma recursiva en el árbol de manera logarítmica O(log n).
     private Nodo buscarRec(NodoAVL nodo, int codigo) {
         if (nodo == null) return null;
-        if (codigo == nodo.getCodigo()) return nodo.getNodo(); // Retorna el enlace de la LL
+        if (codigo == nodo.getCodigo()) return nodo.getNodo();
 
         return (codigo < nodo.getCodigo())
                 ? buscarRec(nodo.getIzq(), codigo)
                 : buscarRec(nodo.getDer(), codigo);
     }
 
+    // Inicia el proceso de impresión ordenada de los estudiantes almacenados.
     public void mostrarArbol() {
         inorden(raiz);
     }
 
+    // Recorre el árbol en inorden para mostrar los estudiantes ordenados ascendentemente por código.
     private void inorden(NodoAVL nodo) {
         if (nodo != null) {
             inorden(nodo.getIzq());
-            // El árbol viaja mediante el puntero para imprimir al estudiante real
             System.out.println(nodo.getNodo().getEstudiante());
             inorden(nodo.getDer());
         }
